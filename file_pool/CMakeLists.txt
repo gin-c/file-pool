@@ -1,0 +1,34 @@
+IF (${OS} STREQUAL "WINDOWS")
+    INCLUDE_DIRECTORIES(
+        "${CPP_THIRD_STORE_DIR}/spdlog/1.4.2/include/"
+        include
+        ${COMMON_HEADER_PATH}
+         
+    )
+ELSEIF (${OS} STREQUAL "LINUX")
+    INCLUDE_DIRECTORIES(
+        "${CPP_THIRD_STORE_DIR}/spdlog/1.4.2/include/"
+        include
+        ${COMMON_HEADER_PATH}
+         
+    )
+ENDIF()
+
+STRING(REGEX REPLACE ".*/(.*)" "\\1" CURRENT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(TARGET_NAME ${CURRENT_FOLDER}${FILE_PREFIX})
+
+
+FILE(GLOB HEADER_LIST "include/*.h")
+
+SET (HEADER_LIST
+    ${HEADER_LIST}
+    
+)
+
+AUX_SOURCE_DIRECTORY (source/ SOURCE_LIST)
+
+ADD_LIBRARY(${TARGET_NAME} STATIC ${SOURCE_LIST} ${HEADER_LIST})
+
+
+

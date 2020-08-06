@@ -1,0 +1,119 @@
+SET (COMMON_HEADER_PATH
+    ${HEADER_DIR}
+    
+)
+IF (${OS} STREQUAL "WINDOWS")
+    INCLUDE_DIRECTORIES(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../file_pool/include"
+        "${CPP_THIRD_STORE_DIR}/spdlog/1.4.2/include/"
+        include
+        ${COMMON_HEADER_PATH}
+         
+    )
+ELSEIF (${OS} STREQUAL "LINUX")
+    INCLUDE_DIRECTORIES(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../file_pool/include"
+        "${CPP_THIRD_STORE_DIR}/spdlog/1.4.2/include/"
+        include
+        ${COMMON_HEADER_PATH}
+         
+    )
+ENDIF()
+
+IF (${OS} STREQUAL "WINDOWS")
+    If (${FILE_PREFIX} STREQUAL "64")
+        LINK_DIRECTORIES (
+            ${LINK_LIBRARIES_DIR}
+        )
+    ELSE()
+        LINK_DIRECTORIES (
+            ${LINK_LIBRARIES_DIR}
+        )
+    ENDIF()
+ELSEIF (${OS} STREQUAL "LINUX")
+    LINK_DIRECTORIES (
+        ${LINK_LIBRARIES_DIR}
+    )
+ENDIF()
+
+SET(TARGET_NAME
+    test_main${FILE_PREFIX}
+)
+
+AUX_SOURCE_DIRECTORY(source SOURCE_LIST)
+FILE (GLOB HEADER_LIST "include/*.h")
+
+SET (HEADER_LIST
+    ${HEADER_LIST}
+)
+
+SET(LIBRARIES_NAME 
+    file_pool
+    )
+	
+FOREACH (_var ${LIBRARIES_NAME})
+	LIST(APPEND DEBUG_LINK_LIBRARIES "debug")
+	LIST(APPEND DEBUG_LINK_LIBRARIES "${_var}${FILE_PREFIX}_d")
+	LIST(APPEND RELEASE_LINK_LIBRARIES "optimized")
+	LIST(APPEND RELEASE_LINK_LIBRARIES "${_var}${FILE_PREFIX}")
+ENDFOREACH ()
+
+IF (${OS} STREQUAL "WINDOWS")
+        ADD_EXECUTABLE (${TARGET_NAME} ${SOURCE_LIST} ${HEADER_LIST})
+        If (${FILE_PREFIX} STREQUAL "64")
+            TARGET_LINK_LIBRARIES (${TARGET_NAME}
+                    ${DEBUG_LINK_LIBRARIES}
+                    ${RELEASE_LINK_LIBRARIES}
+            )
+        ELSE()
+            TARGET_LINK_LIBRARIES (${TARGET_NAME}
+                    ${DEBUG_LINK_LIBRARIES}
+                    ${RELEASE_LINK_LIBRARIES}
+            )
+        ENDIF()
+ELSEIF (${OS} STREQUAL "LINUX") 
+        IF (${PLATFORM_TYPE} MATCHES "arm")
+            MESSAGE(STATUS "curlclient_test arm not compile")
+        ELSE()
+                ADD_EXECUTABLE (${TARGET_NAME} ${SOURCE_LIST} ${HEADER_LIST})
+                TARGET_LINK_LIBRARIES (${TARGET_NAME}
+                    ${DEBUG_LINK_LIBRARIES}
+                    ${RELEASE_LINK_LIBRARIES}
+                )
+        ENDIF()
+ENDIF()
+
+IF (${OS} STREQUAL "WINDOWS")
+    SET(TARGET_INSTALL_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/service/${TARGET_NAME}")
+ELSE()
+    SET(TARGET_INSTALL_DIR "${PROJECT_SOURCE_DIR}/pack/${TARGET_NAME}")
+ENDIF()
+
+set(INSTALL_ENABLE
+    false
+)
+
+IF (${INSTALL_ENABLE} MATCHES "true")
+    IF (${OS} STREQUAL "WINDOWS")
+        If (${FILE_PREFIX} STREQUAL "64")
+            INSTALL (TARGETS ${TARGET_NAME} RUNTIME CONFIGURATIONS Release DESTINATION ${WINDOWS_TARGET_INSTALL_DIR})
+        ELSE()
+            INSTALL (TARGETS ${TARGET_NAME} RUNTIME CONFIGURATIONS Release DESTINATION ${WINDOWS_TARGET_INSTALL_DIR})
+        ENDIF()
+    ELSEIF (${OS} STREQUAL "LINUX") 
+        IF (${PLATFORM_TYPE} MATCHES "arm")
+        ELSE()
+            ADD_CUSTOM_COMMAND(
+                TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND mkdir -p ${TARGET_INSTALL_DIR}
+                COMMAND cp -f ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${TARGET_NAME} ${TARGET_INSTALL_DIR}
+            )
+             
+        ENDIF()
+    ENDIF()
+ENDIF()
+
+
+
+
+
