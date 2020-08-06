@@ -18,7 +18,7 @@ int CStateDownloading::downloadFile(long exceptSize) {
     getLogger()->info("下载文件中,uri:{}", getUri());
 
     // 生成文件下载名称: 192.168.9.247:9081/3,54f963fd205b.jpg  --> 3,54f963fd205b.jpg
-    std::string& uri = getUri();
+    std::string uri = getUri();
     std::string filePath = getContext()->getFilePoolDir() + "/" + uri.substr(uri.find_last_of('/') + 1);
 
     if (getContext()->DownloadFunction(uri, filePath) == false) {

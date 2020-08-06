@@ -37,7 +37,11 @@ class CFilePoolContext {
 
   public:
     /**
-     * @brief 获取文件，返回None，Ready状态其一
+     * @brief 获取文件，返回文件状态，超时时间30秒
+     * @return NONE 文件获取失败
+     * @return DOWNLOADING 文件下载超时
+     * @return CHECKING 文件校验超时
+     * @return CHECKING 文件校验超时
      */
     StateVale getFileBlock(IN const std::string& uri, IN long exceptSize, OUT std::string& filePath);
 
