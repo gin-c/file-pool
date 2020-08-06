@@ -1,5 +1,5 @@
 # filepool
-线程安全的文件下载缓存池。
+线程安全的文件下载缓存池，如果文件已经下载完成过，则会直接使用已经下载好的。
 
 ## 使用示例
 
@@ -24,6 +24,14 @@ int main(int argc, char* argv[]) {
     std::string uri = "http://192.168.9.247:9081/3,54f963fd205b.jpg";
     std::string filePath;
     StateVale   stateValue = filePoolContext.getFileBlock(uri, -1, filePath);
+    if (stateValue == StateVale::NONE) {
+        spdlog::debug("获取文件失败");
+    }
+    else if (stateValue == StateVale::READY) {
+        spdlog::debug("文件读取成功:{}", filePath);
+    }
+	// 之后再通过uri获取文件都是，已经下载好的，不会重新下载
+    stateValue = filePoolContext.getFileBlock(uri, -1, filePath);
     if (stateValue == StateVale::NONE) {
         spdlog::debug("获取文件失败");
     }
