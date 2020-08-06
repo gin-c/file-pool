@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     else if (stateValue == StateVale::READY) {
         spdlog::debug("文件读取成功:{}", filePath);
     }
-	// 之后再通过uri获取文件都是，已经下载好的，不会重新下载
+    // 之后再通过uri获取文件都是，已经下载好的，不会重新下载
     stateValue = filePoolContext.getFileBlock(uri, -1, filePath);
     if (stateValue == StateVale::NONE) {
         spdlog::debug("获取文件失败");
@@ -43,9 +43,6 @@ int main(int argc, char* argv[]) {
 }
 ```
 
-
-
-## 如何嵌入到你自己的项目中
 
 ## 如何嵌入到你自己的项目中
 

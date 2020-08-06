@@ -1,3 +1,9 @@
+// Copyright(c) 2020-present, JiaoMeng.
+// Distributed under the MIT License (http://opensource.org/licenses/MIT)
+
+// spdlog main header file.
+// see example.cpp for usage example
+
 #pragma once
 
 #include <string>
